@@ -1,16 +1,27 @@
 # fc_native_image_resize_example
 
-Demonstrates how to use the fc_native_image_resize plugin.
+To run this example project locally.
 
-## Getting Started
+- cd `example`
+- `flutter run -d <your device>`
 
-This project is a starting point for a Flutter application.
+## Usage
 
-A few resources to get you started if this is your first Flutter project:
+```dart
+final _nativeImgResize = FcNativeImageResize();
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+/// Resizes the given [srcFile] with the given parameters and saves the results to [destFile].
+/// [srcFile] source image path.
+/// [destFile] destination image path.
+/// [keepAspectRatio] if true, keeps aspect ratio.
+/// [type] specifies image type of destination file. 'png' or 'jpeg'.
+/// [quality] only applies for 'jpeg' type, 1-100 (100 best quality).
+await _nativeImgResize.resizeFile(
+          srcFile: srcFile,
+          destFile: destFile,
+          width: 300,
+          height: 300,
+          keepAspectRatio: true,
+          type: 'jpeg',
+          quality: 90)
+```

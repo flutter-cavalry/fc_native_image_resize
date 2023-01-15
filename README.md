@@ -1,15 +1,24 @@
 # fc_native_image_resize
 
-A new Flutter plugin project.
+A Flutter plugin for fast native image resizing.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+```dart
+final _nativeImgResize = FcNativeImageResize();
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+/// Resizes the given [srcFile] with the given parameters and saves the results to [destFile].
+/// [srcFile] source image path.
+/// [destFile] destination image path.
+/// [keepAspectRatio] if true, keeps aspect ratio.
+/// [type] specifies image type of destination file. 'png' or 'jpeg'.
+/// [quality] only applies for 'jpeg' type, 1-100 (100 best quality).
+await _nativeImgResize.resizeFile(
+          srcFile: srcFile,
+          destFile: destFile,
+          width: 300,
+          height: 300,
+          keepAspectRatio: true,
+          type: 'jpeg',
+          quality: 90)
+```
