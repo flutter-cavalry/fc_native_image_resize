@@ -1,0 +1,22 @@
+PODS:
+  - fc_native_image_resize (0.0.1):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+
+DEPENDENCIES:
+  - fc_native_image_resize (from `Flutter/ephemeral/.symlinks/plugins/fc_native_image_resize/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+
+EXTERNAL SOURCES:
+  fc_native_image_resize:
+    :path: Flutter/ephemeral/.symlinks/plugins/fc_native_image_resize/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+
+SPEC CHECKSUMS:
+  fc_native_image_resize: ad90e76d983b3817e6887b142a00d096a32b9e51
+  FlutterMacOS: ae6af50a8ea7d6103d888583d46bd8328a7e9811
+
+PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
+
+COCOAPODS: 1.11.3
