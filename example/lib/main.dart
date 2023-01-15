@@ -21,6 +21,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String? _destImg;
+  String? _err;
   String _imgSizeInfo = '';
   final _nativeImgUtilPlugin = FcNativeImageResize();
 
@@ -33,7 +34,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: _destImg == null
-              ? const Text('Click on the + button to select a photo')
+              ? Text(_err ?? 'Click on the + button to select a photo')
               : Column(
                   children: [
                     SelectableText(_destImg!),
@@ -59,6 +60,9 @@ class _MyAppState extends State<MyApp> {
       }
       var src = result.files.single.path!;
       var dest = tmpPath() + p.extension(src);
+      setState(() {
+        _err = null;
+      });
       await _nativeImgUtilPlugin.resizeFile(
           srcFile: src,
           destFile: dest,
@@ -66,7 +70,7 @@ class _MyAppState extends State<MyApp> {
           height: 300,
           keepAspectRatio: true,
           type: 'jpeg');
-      var imageFile = File(dest); // Or any other way to get a File instance.
+      var imageFile = File(dest);
       var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
       setState(() {
         _destImg = dest;
@@ -74,7 +78,9 @@ class _MyAppState extends State<MyApp> {
             'Decoded size: ${decodedImage.width}x${decodedImage.height}';
       });
     } catch (err) {
-      debugPrint('Error: $err');
+      setState(() {
+        _err = err.toString();
+      });
     }
   }
 }
