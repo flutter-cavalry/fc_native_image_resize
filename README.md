@@ -2,6 +2,14 @@
 
 A Flutter plugin for fast native image resizing.
 
+Supported images:
+
+- Read
+  - JPEG, PNG, WEBP
+  - (iOS/macOS) HEIC
+- Write
+  - JPEG, PNG
+
 ## Usage
 
 ```dart
