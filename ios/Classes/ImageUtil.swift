@@ -11,7 +11,7 @@ enum OutputType {
 }
 
 class ImageUtil {
-    static func resizeFile(src: String, dest: String, width: CGFloat, height: CGFloat, keepAspectRatio: Bool, outType: OutputType, quality: Double?) throws {
+    static func resizeFile(src: String, dest: String, width: CGFloat, height: CGFloat, keepAspectRatio: Bool, outType: OutputType, quality: Int?) throws {
         guard let img = UIImage(contentsOfFile: src) else {
             throw ResizeError.invalidSrc
         }
@@ -20,7 +20,7 @@ class ImageUtil {
         
         let resizedImg = img.resized(to: newSize)
         if outType == .jpeg {
-            try resizedImg.jpegData(compressionQuality: quality ?? 0.9)?.write(to: URL(fileURLWithPath: dest))
+            try resizedImg.jpegData(compressionQuality: Double(quality ?? 90) / 100.0)?.write(to: URL(fileURLWithPath: dest))
         } else {
             try resizedImg.pngData()?.write(to: URL(fileURLWithPath: dest))
         }

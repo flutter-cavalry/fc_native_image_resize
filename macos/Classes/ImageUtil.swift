@@ -11,7 +11,7 @@ enum OutputType {
 }
 
 class ImageUtil {
-    static func resizeFile(src: String, dest: String, width: CGFloat, height: CGFloat, keepAspectRatio: Bool, outType: OutputType, quality: Double?) throws {
+    static func resizeFile(src: String, dest: String, width: CGFloat, height: CGFloat, keepAspectRatio: Bool, outType: OutputType, quality: Int?) throws {
         guard let img = NSImage(contentsOf: URL(fileURLWithPath: src)) else {
             throw ResizeError.invalidSrc
         }
@@ -35,7 +35,7 @@ class ImageUtil {
         return CGSize(width: floor(originalSize.width * minAspectRatio), height: floor(originalSize.height * minAspectRatio))
     }
     
-    static func _nsImageToData(_ image: NSImage, type: OutputType, quality: Double?) -> Data? {
+    static func _nsImageToData(_ image: NSImage, type: OutputType, quality: Int?) -> Data? {
         guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
         else {
             return nil
@@ -45,7 +45,7 @@ class ImageUtil {
         
         var opt: [NSBitmapImageRep.PropertyKey : Any] = [:]
         if type == .jpeg {
-            opt[NSBitmapImageRep.PropertyKey.compressionFactor] = quality ?? 0.9
+            opt[NSBitmapImageRep.PropertyKey.compressionFactor] = Double(quality ?? 90) / 100.0
         }
         return imageRep.representation(using: type == .png ? .png : .jpeg, properties: opt)
     }

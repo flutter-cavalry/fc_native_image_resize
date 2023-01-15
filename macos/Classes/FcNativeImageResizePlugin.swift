@@ -15,18 +15,15 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
         }
         switch call.method {
         case "resizeFile":
-            guard let srcFile = args["srcFile"] as? String,
-                  let destFile = args["destFile"] as? String,
-                  let width = args["width"] as? Int,
-                  let height = args["height"] as? Int,
-                  let outputString = args["type"] as? String,
-                  let keepAspectRatio = args["keepAspectRatio"] as? Bool
-            else {
-                result(FlutterError(code: "InvalidInput", message: "Invalid input", details: nil))
-                return
-            }
+            // Arguments are enforced on dart side.
+            let srcFile = args["srcFile"] as! String
+            let destFile = args["destFile"] as! String
+            let width = args["width"] as! Int
+            let height = args["height"] as! Int
+            let outputString = args["type"] as! String
+            let keepAspectRatio = args["keepAspectRatio"] as! Bool
             
-            let quality = args["quality"] as? Double;
+            let quality = args["quality"] as? Int;
             let outputType = outputString == "png" ? OutputType.png : OutputType.jpeg
             
             DispatchQueue.global().async {
