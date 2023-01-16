@@ -1,32 +1,38 @@
+[![pub package](https://img.shields.io/pub/v/fc_native_image_resize.svg)](https://pub.dev/packages/fc_native_image_resize)
+
 # fc_native_image_resize
 
-A Flutter plugin for fast native image resizing.
+A Flutter plugin for image resizing via native APIs.
 
-Supported images:
+| iOS | Android | macOS | Windows |
+| --- | ------- | ----- | ------- |
+| ✅  | ✅      | ✅    | ✅      |
+
+Supported image types:
 
 - Read
   - JPEG, PNG, WEBP
-  - (iOS/macOS) HEIC
+  - Platform native image types. e.g. HEIC on iOS/macOS
 - Write
   - JPEG, PNG
 
 ## Usage
 
 ```dart
-final _nativeImgResize = FcNativeImageResize();
+  final plugin = FcNativeImageResize();
 
-/// Resizes the given [srcFile] with the given parameters and saves the results to [destFile].
-/// [srcFile] source image path.
-/// [destFile] destination image path.
-/// [keepAspectRatio] if true, keeps aspect ratio.
-/// [type] specifies image type of destination file. 'png' or 'jpeg'.
-/// [quality] only applies for 'jpeg' type, 1-100 (100 best quality).
-await _nativeImgResize.resizeFile(
-          srcFile: srcFile,
-          destFile: destFile,
-          width: 300,
-          height: 300,
-          keepAspectRatio: true,
-          type: 'jpeg',
-          quality: 90)
+  /// Resizes the [srcFile] with the given options and saves the results to [destFile].
+  /// [srcFile] source image path.
+  /// [destFile] destination image path.
+  /// [keepAspectRatio] if true, keeps aspect ratio.
+  /// [type] destination file type. 'png' or 'jpeg'.
+  /// [quality] only applies to 'jpeg' type, 1-100 (100 best quality).
+  await plugin.resizeFile(
+            srcFile: srcFile,
+            destFile: destFile,
+            width: 300,
+            height: 300,
+            keepAspectRatio: true,
+            type: 'jpeg',
+            quality: 90)
 ```
