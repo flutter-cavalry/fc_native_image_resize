@@ -14,7 +14,7 @@ class FcNativeImageResize {
       required int height,
       required bool keepAspectRatio,
       required String type,
-      double? quality}) {
+      int? quality}) {
     return FcNativeImageResizePlatform.instance.resizeFile(
         srcFile: srcFile,
         destFile: destFile,
