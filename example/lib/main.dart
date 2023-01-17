@@ -34,7 +34,9 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: _destImg == null
-              ? Text(_err ?? 'Click on the + button to select a photo')
+              ? Text(_err != null
+                  ? _err!
+                  : 'Click on the + button to select a photo')
               : Column(
                   children: [
                     SelectableText(_destImg!),

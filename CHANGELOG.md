@@ -1,3 +1,7 @@
+## 0.1.0
+
+- Add Windows support.
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+- Initial release.
