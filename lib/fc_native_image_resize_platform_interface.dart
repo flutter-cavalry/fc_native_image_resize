@@ -32,6 +32,6 @@ abstract class FcNativeImageResizePlatform extends PlatformInterface {
       required bool keepAspectRatio,
       required String type,
       int? quality}) {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+    throw UnimplementedError('resizeFile() has not been implemented.');
   }
 }
