@@ -81,6 +81,7 @@ class _MyAppState extends State<MyApp> {
       });
     } catch (err) {
       setState(() {
+        _destImg = null;
         _err = err.toString();
       });
     }
