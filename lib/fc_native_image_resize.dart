@@ -1,7 +1,9 @@
 import 'fc_native_image_resize_platform_interface.dart';
 
 class FcNativeImageResize {
+  ///
   /// Resizes the [srcFile] with the given options and saves the results to [destFile].
+  ///
   /// [srcFile] source image path.
   /// [destFile] destination image path.
   /// [keepAspectRatio] if true, keeps aspect ratio.
