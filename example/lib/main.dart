@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
           width: 300,
           height: 300,
           keepAspectRatio: true,
-          type: 'jpeg');
+          format: 'jpeg');
       var imageFile = File(dest);
       var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
       setState(() {

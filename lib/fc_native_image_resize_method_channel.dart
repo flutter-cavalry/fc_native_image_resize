@@ -16,7 +16,7 @@ class MethodChannelFcNativeImageResize extends FcNativeImageResizePlatform {
       required int width,
       required int height,
       required bool keepAspectRatio,
-      required String type,
+      required String format,
       int? quality}) async {
     await methodChannel.invokeMethod<void>('resizeFile', {
       'srcFile': srcFile,
@@ -24,7 +24,7 @@ class MethodChannelFcNativeImageResize extends FcNativeImageResizePlatform {
       'width': width,
       'height': height,
       'keepAspectRatio': keepAspectRatio,
-      'type': type,
+      'type': format,
       'quality': quality,
     });
   }

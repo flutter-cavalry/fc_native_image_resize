@@ -8,11 +8,11 @@ A Flutter plugin for image resizing via native APIs.
 | --- | ------- | ----- | ------- |
 | ✅  | ✅      | ✅    | ✅      |
 
-Supported image types:
+Supported image formats:
 
 - Read
   - JPEG, PNG, WEBP
-  - Platform native image types. e.g. HEIC on iOS/macOS
+  - Platform native image formats. e.g. HEIC on iOS/macOS
 - Write
   - JPEG, PNG
 
@@ -27,7 +27,7 @@ final plugin = FcNativeImageResize();
 /// [srcFile] source image path.
 /// [destFile] destination image path.
 /// [keepAspectRatio] if true, keeps aspect ratio.
-/// [type] destination file type. 'png' or 'jpeg'.
+/// [format] destination file format. 'png' or 'jpeg'.
 /// [quality] only applies to 'jpeg' type, 1-100 (100 best quality).
 await plugin.resizeFile(
           srcFile: srcFile,
@@ -35,6 +35,6 @@ await plugin.resizeFile(
           width: 300,
           height: 300,
           keepAspectRatio: true,
-          type: 'jpeg',
+          format: 'jpeg',
           quality: 90);
 ```

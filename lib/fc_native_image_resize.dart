@@ -7,7 +7,7 @@ class FcNativeImageResize {
   /// [srcFile] source image path.
   /// [destFile] destination image path.
   /// [keepAspectRatio] if true, keeps aspect ratio.
-  /// [type] destination file type. 'png' or 'jpeg'.
+  /// [format] destination file format. 'png' or 'jpeg'.
   /// [quality] only applies to 'jpeg' type, 1-100 (100 best quality).
   Future<void> resizeFile(
       {required String srcFile,
@@ -15,7 +15,7 @@ class FcNativeImageResize {
       required int width,
       required int height,
       required bool keepAspectRatio,
-      required String type,
+      required String format,
       int? quality}) {
     return FcNativeImageResizePlatform.instance.resizeFile(
         srcFile: srcFile,
@@ -23,7 +23,7 @@ class FcNativeImageResize {
         width: width,
         height: height,
         keepAspectRatio: keepAspectRatio,
-        type: type,
+        format: format,
         quality: quality);
   }
 }
