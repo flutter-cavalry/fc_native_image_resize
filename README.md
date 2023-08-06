@@ -4,9 +4,10 @@
 
 A Flutter plugin for image resizing via native APIs.
 
-| iOS | Android | macOS | Windows |
-| --- | ------- | ----- | ------- |
-| ✅  | ✅      | ✅    | ✅      |
+|      | iOS | Android | macOS | Windows |
+| ---- | --- | ------- | ----- | ------- |
+| Path | ✅  | ✅      | ✅    | ✅      |
+| Uri  | -   | ✅      | -     | -       |
 
 Supported image formats:
 

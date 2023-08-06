@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Support Android Uri.
+
 ## 0.3.0
 
 - Rename `type` to `format`.
