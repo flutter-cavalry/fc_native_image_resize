@@ -5,6 +5,7 @@ class FcNativeImageResize {
   /// Resizes the [srcFile] with the given options and saves the results to [destFile].
   ///
   /// [srcFile] source image path.
+  /// [srcFileUri] true if source image is a Uri (Android only).
   /// [destFile] destination image path.
   /// [keepAspectRatio] if true, keeps aspect ratio.
   /// [format] destination file format. 'png' or 'jpeg'.
@@ -16,6 +17,7 @@ class FcNativeImageResize {
       required int height,
       required bool keepAspectRatio,
       required String format,
+      bool? srcFileUri,
       int? quality}) {
     return FcNativeImageResizePlatform.instance.resizeFile(
         srcFile: srcFile,
@@ -24,6 +26,7 @@ class FcNativeImageResize {
         height: height,
         keepAspectRatio: keepAspectRatio,
         format: format,
+        srcFileUri: srcFileUri,
         quality: quality);
   }
 }

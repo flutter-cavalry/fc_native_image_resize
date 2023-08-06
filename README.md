@@ -21,20 +21,25 @@ Supported image formats:
 ```dart
 final plugin = FcNativeImageResize();
 
-///
-/// Resizes the [srcFile] with the given options and saves the results to [destFile].
-///
-/// [srcFile] source image path.
-/// [destFile] destination image path.
-/// [keepAspectRatio] if true, keeps aspect ratio.
-/// [format] destination file format. 'png' or 'jpeg'.
-/// [quality] only applies to 'jpeg' type, 1-100 (100 best quality).
-await plugin.resizeFile(
-          srcFile: srcFile,
-          destFile: destFile,
-          width: 300,
-          height: 300,
-          keepAspectRatio: true,
-          format: 'jpeg',
-          quality: 90);
+try {
+  ///
+  /// Resizes the [srcFile] with the given options and saves the results to [destFile].
+  ///
+  /// [srcFile] source image path.
+  /// [srcFileUri] true if source image is a Uri (Android only).
+  /// [destFile] destination image path.
+  /// [keepAspectRatio] if true, keeps aspect ratio.
+  /// [format] destination file format. 'png' or 'jpeg'.
+  /// [quality] only applies to 'jpeg' type, 1-100 (100 best quality).
+  await plugin.resizeFile(
+            srcFile: srcFile,
+            destFile: destFile,
+            width: 300,
+            height: 300,
+            keepAspectRatio: true,
+            format: 'jpeg',
+            quality: 90);
+} catch (err) {
+  // Handle platform errors.
+}
 ```

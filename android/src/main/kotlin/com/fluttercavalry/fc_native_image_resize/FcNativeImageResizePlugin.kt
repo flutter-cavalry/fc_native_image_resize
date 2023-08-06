@@ -1,9 +1,11 @@
 package com.fluttercavalry.fc_native_image_resize
 
+import android.content.Context
 import androidx.annotation.NonNull
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -25,12 +27,15 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
 
+  private lateinit var mContext : Context
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
       val taskQueue =
               flutterPluginBinding.binaryMessenger.makeBackgroundTaskQueue()
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "fc_native_image_resize", StandardMethodCodec.INSTANCE,
             taskQueue)
     channel.setMethodCallHandler(this)
+    mContext = flutterPluginBinding.applicationContext
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -43,6 +48,7 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
               val height = call.argument<Int>("height")!!
               val fileTypeString = call.argument<String>("type")!!
               val keepAspectRatio = call.argument<Boolean>("keepAspectRatio")!!
+              val srcFileUri = call.argument<Boolean>("srcFileUri") ?: false
               var quality = call.argument<Int?>("quality") ?: 90
               if (quality < 0) {
                   quality = 0;
@@ -58,7 +64,13 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
                   fileType = Bitmap.CompressFormat.JPEG
               }
               try {
-                  val bitmap = BitmapFactory.decodeFile(srcFile)
+                  var bitmap: Bitmap
+                  if (srcFileUri) {
+                    val inputStream =  mContext.contentResolver.openInputStream(Uri.parse(srcFile))
+                    bitmap = BitmapFactory.decodeStream(inputStream)
+                  } else {
+                    bitmap = BitmapFactory.decodeFile(srcFile)
+                  }
                   val oldWidth = bitmap.width
                   val oldHeight = bitmap.height
                   val newSize: Pair<Int, Int> = if (keepAspectRatio) {

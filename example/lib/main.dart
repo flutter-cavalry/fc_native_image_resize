@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:fc_native_image_resize/fc_native_image_resize.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -46,31 +46,31 @@ class _MyAppState extends State<MyApp> {
                 ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _selectImage,
-          tooltip: 'Select an image',
+          onPressed: _pickImage,
+          tooltip: 'Pick an image',
           child: const Icon(Icons.add),
         ),
       ),
     );
   }
 
-  Future<void> _selectImage() async {
+  Future<void> _pickImage() async {
     try {
-      var result = await FilePicker.platform.pickFiles();
-      if (result == null) {
+      final src = await openFile();
+      if (src == null) {
         return;
       }
-      var src = result.files.single.path!;
-      var dest = tmpPath() + p.extension(src);
+      var dest = tmpPath() + p.extension(src.name);
       setState(() {
         _err = null;
       });
       await _nativeImgUtilPlugin.resizeFile(
-          srcFile: src,
+          srcFile: src.path,
           destFile: dest,
           width: 300,
           height: 300,
           keepAspectRatio: true,
+          srcFileUri: Platform.isAndroid,
           format: 'jpeg');
       var imageFile = File(dest);
       var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
