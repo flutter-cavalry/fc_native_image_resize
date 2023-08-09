@@ -1,3 +1,7 @@
+## 0.4.1
+
+- Fix various issues on example project.
+
 ## 0.4.0
 
 - Support Android Uri.
