@@ -56,7 +56,12 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _pickImage() async {
     try {
-      final src = await openFile();
+      final List<XTypeGroup> acceptedTypeGroups = Platform.isIOS
+          ? [
+              const XTypeGroup(uniformTypeIdentifiers: ['public.item'])
+            ]
+          : [];
+      final src = await openFile(acceptedTypeGroups: acceptedTypeGroups);
       if (src == null) {
         return;
       }
