@@ -12,10 +12,12 @@ A Flutter plugin for image resizing via native APIs.
 Supported image formats:
 
 - Read
-  - JPEG, PNG, WEBP
+  - JPEG, PNG
   - Platform native image formats. e.g. HEIC on iOS/macOS
 - Write
   - JPEG, PNG
+
+> **NOTE on Windows**: It's recommended to use the [image package](https://pub.dev/packages/image) instead of native Windows APIs as the latter has limited support for image formats.
 
 ## Usage
 
