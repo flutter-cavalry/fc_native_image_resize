@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fc_native_image_resize/fc_native_image_resize.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 
 import 'package:tmp_path/tmp_path.dart';
@@ -23,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   String? _destImg;
   String? _err;
   String _imgSizeInfo = '';
+  final ImagePicker _mobilePicker = ImagePicker();
   final _nativeImgUtilPlugin = FcNativeImageResize();
 
   @override
@@ -56,12 +58,12 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _pickImage() async {
     try {
-      final List<XTypeGroup> acceptedTypeGroups = Platform.isIOS
-          ? [
-              const XTypeGroup(uniformTypeIdentifiers: ['public.item'])
-            ]
-          : [];
-      final src = await openFile(acceptedTypeGroups: acceptedTypeGroups);
+      XFile? src;
+      if (Platform.isAndroid || Platform.isIOS) {
+        src = await _mobilePicker.pickImage(source: ImageSource.gallery);
+      } else {
+        src = await openFile();
+      }
       if (src == null) {
         return;
       }
