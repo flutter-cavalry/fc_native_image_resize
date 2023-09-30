@@ -1,3 +1,8 @@
+## 0.5.0
+
+- Migrate to a shared codebase between macOS and iOS.
+- Simplify resizing logic on macOS.
+
 ## 0.4.1
 
 - Fix various issues on example project.
