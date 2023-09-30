@@ -50,7 +50,8 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
           switch outputType {
           case .jpeg:
             try img.saveToJPEGFile(dest: destFile, quality: quality)
-          default: break
+          case .png:
+            try img.saveToPNGFile(dest: destFile)
           }
           
           DispatchQueue.main.async {

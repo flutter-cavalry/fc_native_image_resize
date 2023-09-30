@@ -52,7 +52,6 @@ class FCImage {
 #if os(iOS)
     let format = UIGraphicsImageRendererFormat()
     format.scale = 1
-    let renderer = UIGraphicsImageRenderer(size: to, format: format)
     let rawImg = image.resized(to: to)
     return FCImage(image: rawImg)
 #elseif os(macOS)
