@@ -39,8 +39,10 @@ flutter:
         pluginClass: FcNativeImageResizePlugin
       ios:
         pluginClass: FcNativeImageResizePlugin
+        sharedDarwinSource: true
       macos:
         pluginClass: FcNativeImageResizePlugin
+        sharedDarwinSource: true
       windows:
         pluginClass: FcNativeImageResizePluginCApi
 

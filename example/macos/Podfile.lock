@@ -1,28 +1,29 @@
 PODS:
   - fc_native_image_resize (0.0.1):
+    - Flutter
     - FlutterMacOS
   - file_selector_macos (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
 
 DEPENDENCIES:
-  - fc_native_image_resize (from `Flutter/ephemeral/.symlinks/plugins/fc_native_image_resize/macos`)
+  - fc_native_image_resize (from `Flutter/ephemeral/.symlinks/plugins/fc_native_image_resize/darwin`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
 
 EXTERNAL SOURCES:
   fc_native_image_resize:
-    :path: Flutter/ephemeral/.symlinks/plugins/fc_native_image_resize/macos
+    :path: Flutter/ephemeral/.symlinks/plugins/fc_native_image_resize/darwin
   file_selector_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
 
 SPEC CHECKSUMS:
-  fc_native_image_resize: ad90e76d983b3817e6887b142a00d096a32b9e51
+  fc_native_image_resize: 60d8d2ffd234a66c697aee1789240e06ae4c3e08
   file_selector_macos: 468fb6b81fac7c0e88d71317f3eec34c3b008ff9
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0

@@ -1,10 +1,24 @@
-import Flutter
-import UIKit
+import Foundation
 
-public class SwiftFcNativeImageResizePlugin: NSObject, FlutterPlugin {
+#if os(iOS)
+import Flutter
+#elseif os(macOS)
+import FlutterMacOS
+#endif
+
+enum PluginError: Error {
+  case invalidSrc
+}
+
+public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "fc_native_image_resize", binaryMessenger: registrar.messenger())
-    let instance = SwiftFcNativeImageResizePlugin()
+#if os(iOS)
+    let binaryMessenger = registrar.messenger()
+#elseif os(macOS)
+    let binaryMessenger = registrar.messenger
+#endif
+    let channel = FlutterMethodChannel(name: "fc_native_image_resize", binaryMessenger: binaryMessenger)
+    let instance = FcNativeImageResizePlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
   
@@ -24,15 +38,25 @@ public class SwiftFcNativeImageResizePlugin: NSObject, FlutterPlugin {
       let keepAspectRatio = args["keepAspectRatio"] as! Bool
       
       let quality = args["quality"] as? Int;
-      let outputType = outputString == "png" ? OutputType.png : OutputType.jpeg
+      let outputType = outputString == "png" ? FCImageOutputFormat.png : FCImageOutputFormat.jpeg
       
       DispatchQueue.global().async {
         do {
-          try ImageUtil.resizeFile(src: srcFile, dest: destFile, width: CGFloat(width), height: CGFloat(height), keepAspectRatio: keepAspectRatio, outType: outputType, quality: quality)
+          guard var img = FCImage(path: srcFile) else {
+            throw PluginError.invalidSrc
+          }
+          img = img.resized(to: CGSize(width: CGFloat(width), height: CGFloat(height)), keepAspectRatio: keepAspectRatio)
+          
+          switch outputType {
+          case .jpeg:
+            try img.saveToJPEGFile(dest: destFile, quality: quality)
+          default: break
+          }
+          
           DispatchQueue.main.async {
             result(nil)
           }
-        } catch ResizeError.invalidSrc {
+        } catch PluginError.invalidSrc {
           DispatchQueue.main.async {
             result(FlutterError(code: "InvalidSrc", message: "", details: nil))
           }
