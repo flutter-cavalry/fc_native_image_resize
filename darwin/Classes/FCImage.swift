@@ -2,7 +2,7 @@
 //  FCImage.swift
 //
 //  Created by Mgenware(Liu YuanYuan) on 2023/9/30.
-//  https://github.com/flutter-cavalry/fc_native_image_resize/blob/main/darwin/Classes/FcNativeImageResizePlugin.swift
+//  https://github.com/flutter-cavalry/fc_native_image_resize/blob/main/darwin/Classes/FCImage.swift
 //
 
 import Foundation
