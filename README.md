@@ -13,7 +13,7 @@ Supported image formats:
 
 - Read
   - JPEG, PNG
-  - Platform native image formats. e.g. HEIC on iOS/macOS
+  - Platform native image formats. e.g. HEIF/AVIF on iOS/macOS
 - Write
   - JPEG, PNG
 
