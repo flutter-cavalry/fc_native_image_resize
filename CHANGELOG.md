@@ -1,3 +1,7 @@
+## 0.6.0
+
+- Fix various issues in `FCImage`.
+
 ## 0.5.0
 
 - Migrate to a shared codebase between macOS and iOS.
