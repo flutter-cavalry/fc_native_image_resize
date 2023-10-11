@@ -32,6 +32,8 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
       // Arguments are enforced on dart side.
       let srcFile = args["srcFile"] as! String
       let destFile = args["destFile"] as! String
+      let srcUrl = URL(fileURLWithPath: srcFile)
+      let destUrl = URL(fileURLWithPath: destFile)
       let width = args["width"] as! Int
       let height = args["height"] as! Int
       let outputString = args["type"] as! String
@@ -42,16 +44,16 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
       
       DispatchQueue.global().async {
         do {
-          guard var img = FCImage(path: srcFile) else {
+          guard var img = FCImage(url: srcUrl) else {
             throw PluginError.invalidSrc
           }
           img = img.resized(to: CGSize(width: CGFloat(width), height: CGFloat(height)), keepAspectRatio: keepAspectRatio)
           
           switch outputType {
           case .jpeg:
-            try img.saveToJPEGFile(dest: destFile, quality: quality)
+            try img.saveToJPEGFile(dest: destUrl, quality: quality)
           case .png:
-            try img.saveToPNGFile(dest: destFile)
+            try img.saveToPNGFile(dest: destUrl)
           }
           
           DispatchQueue.main.async {
