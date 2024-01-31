@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/fc_native_image_resize.svg)](https://pub.dev/packages/fc_native_image_resize)
 
-A Flutter plugin for image resizing via native APIs.
+A Flutter plugin to resize images via native APIs.
 
 |      | iOS | Android | macOS | Windows |
 | ---- | --- | ------- | ----- | ------- |
