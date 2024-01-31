@@ -59,9 +59,18 @@ class FCImage {
     image = img
   }
   
+  init(cgImage: CGImage) {
+#if os(iOS)
+    let img = UIImage(cgImage: cgImage)
+#elseif os(macOS)
+    let img = NSImage(cgImage: cgImage, size: .zero)
+#endif
+    image = img
+  }
+  
   func size() -> CGSize {
 #if os(iOS)
-    guard let cgImage = image.cgImage else{
+    guard let cgImage = image.cgImage else {
       return CGSize()
     }
     let width = cgImage.width
@@ -73,6 +82,14 @@ class FCImage {
       return size
     }
     return CGSize()
+#endif
+  }
+  
+  func getCGImage() -> CGImage? {
+#if os(iOS)
+    return image.cgImage
+#elseif os(macOS)
+    return image.cgImage(forProposedRect: nil, context: nil, hints: nil)
 #endif
   }
   
