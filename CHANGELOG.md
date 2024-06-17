@@ -1,3 +1,7 @@
+## 0.8.0
+
+- Allow resizing with only width or height.
+
 ## 0.7.0
 
 - Fix aspect ratio issues on iOS.
