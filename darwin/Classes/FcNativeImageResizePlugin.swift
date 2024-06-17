@@ -8,6 +8,7 @@ import FlutterMacOS
 
 enum PluginError: Error {
   case invalidSrc
+  case invalidSize
 }
 
 public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
@@ -47,7 +48,10 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
           guard var img = FCImage(url: srcUrl) else {
             throw PluginError.invalidSrc
           }
-          img = img.resized(to: CGSize(width: CGFloat(width), height: CGFloat(height)), keepAspectRatio: keepAspectRatio)
+          guard let resized = img.resized(to: CGSize(width: CGFloat(width), height: CGFloat(height)), keepAspectRatio: keepAspectRatio) else {
+            throw PluginError.invalidSize
+          }
+          img = resized
           
           switch outputType {
           case .jpeg:

@@ -103,7 +103,8 @@ class _MyAppState extends State<MyApp> {
                               fontSize: 16.0, fontWeight: FontWeight.bold)),
                       if (task.error != null) ...[
                         const SizedBox(height: 8.0),
-                        Text(task.error!),
+                        Text(task.error!,
+                            style: const TextStyle(color: Colors.red)),
                       ],
                       if (task.destFile != null) ...[
                         const SizedBox(height: 8.0),
@@ -158,16 +159,23 @@ class _MyAppState extends State<MyApp> {
           width: 300,
           height: 300,
           keepAspectRatio: false));
-      await Future.forEach(_tasks, (Task task) async {
-        await task.run();
-        setState(() {});
-      });
       _tasks.add(Task(
-          name: 'Resize to 300x (keepAspectRatio: true)',
+          name: 'Resize to 300x',
           srcFile: srcPath,
           width: 300,
           height: -1,
           keepAspectRatio: true));
+      _tasks.add(Task(
+          name: 'Resize to x300',
+          srcFile: srcPath,
+          width: -1,
+          height: 300,
+          keepAspectRatio: true));
+
+      await Future.forEach(_tasks, (Task task) async {
+        await task.run();
+        setState(() {});
+      });
     } catch (err) {
       setState(() {
         _err = err.toString();

@@ -71,14 +71,10 @@ class FCImage {
   
   func size() -> CGSize {
 #if os(iOS)
-    guard let cgImage = image.cgImage else {
-      return CGSize()
-    }
-    let width = cgImage.width
-    let height = cgImage.height
-    return CGSize(width: width, height: height)
+    // Don't use `cgImage` to get size, it doesn't take orientation into account.
+    return CGSize(width: image.size.width * image.scale, height: image.size.height * image.scale)
 #elseif os(macOS)
-    if let rep = image.representations.first{
+    if let rep = image.representations.first {
       let size = CGSize(width: rep.pixelsWide, height: rep.pixelsHigh)
       return size
     }
@@ -94,11 +90,21 @@ class FCImage {
 #endif
   }
   
-  func resized(to: CGSize, keepAspectRatio: Bool) -> FCImage {
+  func resized(to: CGSize, keepAspectRatio: Bool) -> FCImage? {
+    if to.width <= 0 && to.height <= 0 {
+      return nil
+    }
+    var targetSize = to
+    if to.width <= 0 {
+      targetSize.width = self.size().width * to.height / self.size().height
+    }
+    if to.height <= 0 {
+      targetSize.height = self.size().height * to.width / self.size().width
+    }
 #if os(iOS)
-    return FCImage(image: image.resized(to: to, keepAspectRatio: keepAspectRatio))
+    return FCImage(image: image.resized(to: targetSize, keepAspectRatio: keepAspectRatio))
 #elseif os(macOS)
-    return FCImage(image: image.resized(to: to, keepAspectRatio: keepAspectRatio))
+    return FCImage(image: image.resized(to: targetSize, keepAspectRatio: keepAspectRatio))
 #endif
   }
   
