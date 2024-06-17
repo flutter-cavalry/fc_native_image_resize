@@ -20,12 +20,52 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+class Task {
+  final String name;
+  final String srcFile;
+  final int width;
+  final int height;
+  final bool keepAspectRatio;
+
+  String? destFile;
+  String? destImgSize;
+  String? error;
+
+  Task(
+      {required this.name,
+      required this.srcFile,
+      required this.width,
+      required this.height,
+      required this.keepAspectRatio});
+
+  Future<void> run() async {
+    try {
+      var nativeImgUtilPlugin = FcNativeImageResize();
+      final destFile = tmpPath() + p.extension(srcFile);
+      await nativeImgUtilPlugin.resizeFile(
+          srcFile: srcFile,
+          destFile: destFile,
+          width: width,
+          height: height,
+          keepAspectRatio: keepAspectRatio,
+          srcFileUri: Platform.isAndroid,
+          format: 'jpeg');
+      this.destFile = destFile;
+      var imageFile = File(destFile);
+      var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
+      destImgSize =
+          'Decoded size: ${decodedImage.width}x${decodedImage.height}';
+    } catch (err) {
+      error = err.toString();
+    }
+  }
+}
+
 class _MyAppState extends State<MyApp> {
-  String? _destImg;
+  String? _srcImage;
   String? _err;
-  String _imgSizeInfo = '';
   final ImagePicker _mobilePicker = ImagePicker();
-  final _nativeImgUtilPlugin = FcNativeImageResize();
+  final _tasks = <Task>[];
 
   @override
   Widget build(BuildContext context) {
@@ -34,18 +74,51 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: _destImg == null
-              ? Text(_err != null
-                  ? _err!
-                  : 'Click on the + button to select a photo')
-              : Column(
-                  children: [
-                    SelectableText(_destImg!),
-                    Text(_imgSizeInfo),
-                    Image(image: FileImage(File(_destImg!)))
-                  ],
-                ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Click on the + button to select a photo'),
+                const SizedBox(height: 8.0),
+                if (_err != null) ...[const SizedBox(height: 8.0), Text(_err!)],
+                if (_srcImage != null) ...[
+                  const SizedBox(height: 8.0),
+                  Text('Source image: $_srcImage'),
+                  const SizedBox(height: 8.0),
+                  Image(
+                    image: FileImage(File(_srcImage!)),
+                    width: 200,
+                    height: 200,
+                  ),
+                ],
+                ..._tasks.map((task) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8.0),
+                      Text('>>> ${task.name}',
+                          style: const TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold)),
+                      if (task.error != null) ...[
+                        const SizedBox(height: 8.0),
+                        Text(task.error!),
+                      ],
+                      if (task.destFile != null) ...[
+                        const SizedBox(height: 8.0),
+                        Text('Dest image: ${task.destFile}'),
+                        const SizedBox(height: 8.0),
+                        Text(task.destImgSize ?? ''),
+                        const SizedBox(height: 8.0),
+                        Image(image: FileImage(File(task.destFile!))),
+                      ],
+                    ],
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _pickImage,
@@ -67,28 +140,36 @@ class _MyAppState extends State<MyApp> {
       if (src == null) {
         return;
       }
-      var dest = tmpPath() + p.extension(src.name);
+      final srcPath = src.path;
       setState(() {
+        _srcImage = srcPath;
         _err = null;
+        _tasks.clear();
       });
-      await _nativeImgUtilPlugin.resizeFile(
-          srcFile: src.path,
-          destFile: dest,
+      _tasks.add(Task(
+          name: 'Resize to 300x300 (keepAspectRatio: true)',
+          srcFile: srcPath,
           width: 300,
           height: 300,
-          keepAspectRatio: true,
-          srcFileUri: Platform.isAndroid,
-          format: 'jpeg');
-      var imageFile = File(dest);
-      var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
-      setState(() {
-        _destImg = dest;
-        _imgSizeInfo =
-            'Decoded size: ${decodedImage.width}x${decodedImage.height}';
+          keepAspectRatio: true));
+      _tasks.add(Task(
+          name: 'Resize to 300x300 (keepAspectRatio: false)',
+          srcFile: srcPath,
+          width: 300,
+          height: 300,
+          keepAspectRatio: false));
+      await Future.forEach(_tasks, (Task task) async {
+        await task.run();
+        setState(() {});
       });
+      _tasks.add(Task(
+          name: 'Resize to 300x (keepAspectRatio: true)',
+          srcFile: srcPath,
+          width: 300,
+          height: -1,
+          keepAspectRatio: true));
     } catch (err) {
       setState(() {
-        _destImg = null;
         _err = err.toString();
       });
     }
