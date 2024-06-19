@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  fc_native_image_resize
   file_selector_windows
 )
 

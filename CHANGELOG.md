@@ -1,3 +1,7 @@
+## 0.9.0
+
+- Remove Windows implementation.
+
 ## 0.8.0
 
 - Allow resizing with only width or height.

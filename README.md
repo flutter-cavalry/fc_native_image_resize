@@ -4,10 +4,10 @@
 
 A Flutter plugin to resize images via native APIs.
 
-|      | iOS | Android | macOS | Windows |
-| ---- | --- | ------- | ----- | ------- |
-| Path | ✅  | ✅      | ✅    | ✅      |
-| Uri  | -   | ✅      | -     | -       |
+|      | iOS | Android | macOS | Windows                |
+| ---- | --- | ------- | ----- | ---------------------- |
+| Path | ✅  | ✅      | ✅    | 　 ❌ (See note below) |
+| Uri  | -   | ✅      | -     | -                      |
 
 Supported image formats:
 
@@ -17,7 +17,7 @@ Supported image formats:
 - Write
   - JPEG, PNG
 
-> **NOTE on Windows**: It's recommended to use the [image package](https://pub.dev/packages/image) instead of native Windows APIs as the latter has limited support for image formats.
+> **NOTE on Windows**: Starting from 0.9.0. Windows support has been removed. It's recommended to use the [image package](https://pub.dev/packages/image) instead of native Windows APIs as the latter has limited support for image formats.
 
 ## Usage
 
