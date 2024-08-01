@@ -44,8 +44,8 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
               // Arguments are enforced at dart level.
               val srcFile = call.argument<String>("srcFile")!!
               val destFile = call.argument<String>("destFile")!!
-              val width = call.argument<Int>("width")!!
-              val height = call.argument<Int>("height")!!
+              var width = call.argument<Int>("width")!!
+              var height = call.argument<Int>("height")!!
               val fileTypeString = call.argument<String>("type")!!
               val keepAspectRatio = call.argument<Boolean>("keepAspectRatio")!!
               val srcFileUri = call.argument<Boolean>("srcFileUri") ?: false
@@ -64,7 +64,7 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
                   fileType = Bitmap.CompressFormat.JPEG
               }
               try {
-                  var bitmap: Bitmap
+                  val bitmap: Bitmap
                   if (srcFileUri) {
                     val inputStream =  mContext.contentResolver.openInputStream(Uri.parse(srcFile))
                     bitmap = BitmapFactory.decodeStream(inputStream)
@@ -73,10 +73,17 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
                   }
                   val oldWidth = bitmap.width
                   val oldHeight = bitmap.height
+                  if (width <= 0) {
+                      width = oldWidth * height / oldHeight
+                  }
+                  if (height <= 0) {
+                      height = oldHeight * width / oldWidth
+                  }
+
                   val newSize: Pair<Int, Int> = if (keepAspectRatio) {
                       sizeToFit(oldWidth, oldHeight, width, height)
                   } else {
-                      Pair(oldWidth, oldHeight)
+                      Pair(width, height)
                   }
                   val newBitmap = Bitmap.createScaledBitmap(bitmap, newSize.first, newSize.second, true)
                   val bos = ByteArrayOutputStream()

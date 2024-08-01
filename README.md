@@ -25,12 +25,16 @@ Supported image formats:
 final plugin = FcNativeImageResize();
 
 try {
-  ///
-  /// Resizes the [srcFile] with the given options and saves the results to [destFile].
+  /// Resizes the [srcFile] image with the given options and saves the results
+  /// to [destFile].
   ///
   /// [srcFile] source image path.
   /// [srcFileUri] true if source image is a Uri (Android only).
   /// [destFile] destination image path.
+  /// [width] destination image width.
+  /// Pass -1 to adjust width based on height (keepAspectRatio must be true).
+  /// [height] destination image height.
+  /// Pass -1 to adjust height based on width (keepAspectRatio must be true).
   /// [keepAspectRatio] if true, keeps aspect ratio.
   /// [format] destination file format. 'png' or 'jpeg'.
   /// [quality] only applies to 'jpeg' type, 1-100 (100 best quality).
