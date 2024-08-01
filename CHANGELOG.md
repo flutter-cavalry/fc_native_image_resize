@@ -1,3 +1,8 @@
+## 0.10.0
+
+- Update Android project.
+- Prevent upscaling when `keepAspectRatio` is `true`.
+
 ## 0.9.0
 
 - Remove Windows implementation.
