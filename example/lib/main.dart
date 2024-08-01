@@ -48,7 +48,6 @@ class Task {
           width: width,
           height: height,
           keepAspectRatio: keepAspectRatio,
-          srcFileUri: Platform.isAndroid,
           format: 'jpeg');
       this.destFile = destFile;
       var imageFile = File(destFile);
