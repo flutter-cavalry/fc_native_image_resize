@@ -19,9 +19,6 @@ class MethodChannelFcNativeImageResize extends FcNativeImageResizePlatform {
       required String format,
       bool? srcFileUri,
       int? quality}) async {
-    if (width <= 0 && height <= 0) {
-      throw ArgumentError('Both size and height cannot be 0');
-    }
     await methodChannel.invokeMethod<void>('resizeFile', {
       'srcFile': srcFile,
       'destFile': destFile,
