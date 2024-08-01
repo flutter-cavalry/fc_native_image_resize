@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fc_native_image_resize/fc_native_image_resize.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 
@@ -170,6 +171,24 @@ class _MyAppState extends State<MyApp> {
           width: -1,
           height: 300,
           keepAspectRatio: true));
+
+      // Upscaling task.
+      final localImgBytes = await rootBundle.load('res/google.png');
+      final smallImgPath = '${tmpPath()}_small.png';
+      await File(smallImgPath).writeAsBytes(localImgBytes.buffer.asUint8List());
+      _tasks.add(Task(
+          name: 'No upscaling to 1000x1000 (keepAspectRatio: true)',
+          srcFile: smallImgPath,
+          width: 1000,
+          height: 1000,
+          keepAspectRatio: true));
+
+      _tasks.add(Task(
+          name: 'Upscaling to 1000x1000 (keepAspectRatio: false)',
+          srcFile: smallImgPath,
+          width: 1000,
+          height: 1000,
+          keepAspectRatio: false));
 
       await Future.forEach(_tasks, (Task task) async {
         await task.run();
