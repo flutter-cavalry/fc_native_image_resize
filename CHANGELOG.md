@@ -1,3 +1,7 @@
+## 0.11.0
+
+- Update to gradle 8
+
 ## 0.10.0
 
 - Update Android project.
