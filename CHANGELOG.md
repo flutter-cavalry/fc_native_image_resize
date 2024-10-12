@@ -1,3 +1,7 @@
+# 0.12.0
+
+- Move from Looper to dispatcher.
+
 ## 0.11.0
 
 - Update to gradle 8
