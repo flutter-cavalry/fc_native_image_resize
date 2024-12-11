@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Handler
+import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.lang.Integer.min
+import kotlin.reflect.typeOf
 
 
 /** FcNativeImageResizePlugin */
@@ -64,12 +66,16 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
                           fileType = Bitmap.CompressFormat.JPEG
                       }
                       val bitmap: Bitmap
-                      if (srcFileUri) {
-                          val inputStream =
-                              mContext.contentResolver.openInputStream(Uri.parse(srcFile))
-                          bitmap = BitmapFactory.decodeStream(inputStream)
-                      } else {
-                          bitmap = BitmapFactory.decodeFile(srcFile)
+                      try {
+                          if (srcFileUri) {
+                              val inputStream =
+                                  mContext.contentResolver.openInputStream(Uri.parse(srcFile))
+                              bitmap = BitmapFactory.decodeStream(inputStream)
+                          } else {
+                              bitmap = BitmapFactory.decodeFile(srcFile)
+                          }
+                      } catch (err: Exception) {
+                          throw FailedToDecodeImageFileException(err.message)
                       }
                       val oldWidth = bitmap.width
                       val oldHeight = bitmap.height
@@ -98,6 +104,10 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
                       launch(Dispatchers.Main) {
                           result.success(null)
                       }
+                  } catch (err: FailedToDecodeImageFileException) {
+                      launch(Dispatchers.Main) {
+                          result.error("FailedToDecodeImageFile", err.message, null)
+                      }
                   } catch (err: Exception) {
                       launch(Dispatchers.Main) {
                           result.error("PluginError", err.message, null)
@@ -123,3 +133,5 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
     channel.setMethodCallHandler(null)
   }
 }
+
+class FailedToDecodeImageFileException(message: String?) : Exception(message) {}
