@@ -1,4 +1,5 @@
 import 'fc_native_image_resize_platform_interface.dart';
+export 'failed_to_decode_image_file_exception.dart';
 
 class FcNativeImageResize {
   /// Resizes the [srcFile] image with the given options and saves the results
