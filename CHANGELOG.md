@@ -1,3 +1,7 @@
+# 0.13.0
+
+- Better error handling when it fails to decode a file.
+
 # 0.12.0
 
 - Move from Looper to dispatcher.
