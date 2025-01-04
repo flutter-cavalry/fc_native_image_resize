@@ -1,3 +1,8 @@
+# 0.14.0
+
+- Add Swift Package Manager support.
+- Add URL support iOS / macOS.
+
 # 0.13.0
 
 - Better error handling when it fails to decode a file.
