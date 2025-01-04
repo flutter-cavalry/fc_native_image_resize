@@ -7,7 +7,7 @@ A Flutter plugin to resize images via native APIs.
 |      | iOS | Android | macOS | Windows                |
 | ---- | --- | ------- | ----- | ---------------------- |
 | Path | ✅  | ✅      | ✅    | 　 ❌ (See note below) |
-| Uri  | -   | ✅      | -     | -                      |
+| Uri  | ✅  | ✅      | ✅    | -                      |
 
 Supported image formats:
 
@@ -29,7 +29,7 @@ try {
   /// to [destFile].
   ///
   /// [srcFile] source image path.
-  /// [srcFileUri] true if source image is a Uri (Android only).
+  /// [srcFileUri] true if source image is a Uri (Android/iOS/macOS).
   /// [destFile] destination image path.
   /// [width] destination image width.
   /// Pass -1 to adjust width based on height (keepAspectRatio must be true).

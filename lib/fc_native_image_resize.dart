@@ -6,7 +6,7 @@ class FcNativeImageResize {
   /// to [destFile].
   ///
   /// [srcFile] source image path.
-  /// [srcFileUri] true if source image is a Uri (Android only).
+  /// [srcFileUri] true if source image is a Uri (Android/iOS/macOS).
   /// [destFile] destination image path.
   /// [width] destination image width.
   /// Pass -1 to adjust width based on height (keepAspectRatio must be true).
