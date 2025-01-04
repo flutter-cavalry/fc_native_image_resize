@@ -8,7 +8,7 @@
 PRODUCT_NAME = fc_native_image_resize_example
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.flutter-cavalry.fcNativeImageResizeExample
+PRODUCT_BUNDLE_IDENTIFIER = com.fluttercavalry.fcNativeImageResizeExample
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 com.flutter-cavalry. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2025 com.fluttercavalry. All rights reserved.
