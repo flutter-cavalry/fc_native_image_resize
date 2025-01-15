@@ -1,3 +1,7 @@
+# 0.14.2
+
+- Switch to `Dispatchers.Default`.
+
 # 0.14.0
 
 - Add Swift Package Manager support.

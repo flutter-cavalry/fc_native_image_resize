@@ -42,7 +42,7 @@ class FcNativeImageResizePlugin: FlutterPlugin, MethodCallHandler {
   override fun onMethodCall(call: MethodCall, result: Result) {
       when (call.method) {
           "resizeFile" -> {
-              CoroutineScope(Dispatchers.IO).launch {
+              CoroutineScope(Dispatchers.Default).launch {
                   try {
                       val srcFile = call.argument<String>("srcFile")!!
                       val destFile = call.argument<String>("destFile")!!
