@@ -1,3 +1,7 @@
+# 0.15.0
+
+- Fix EXIF orientation issue on Android.
+
 # 0.14.2
 
 - Switch to `Dispatchers.Default`.
