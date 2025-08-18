@@ -1,13 +1,10 @@
 package com.fluttercavalry.fc_native_image_resize
 
 import android.content.Context
-import androidx.annotation.NonNull
-
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Handler
-import android.util.Log
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -18,11 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
-import java.lang.Integer.min
-import kotlin.reflect.typeOf
-import androidx.core.net.toUri
-import androidx.core.graphics.scale
-
+import androidx.exifinterface.media.ExifInterface
 
 /** FcNativeImageResizePlugin */
 class FcNativeImageResizePlugin : FlutterPlugin, MethodCallHandler {
@@ -55,9 +48,9 @@ class FcNativeImageResizePlugin : FlutterPlugin, MethodCallHandler {
                         val srcFileUri = call.argument<Boolean>("srcFileUri") ?: false
                         var quality = call.argument<Int?>("quality") ?: 90
                         if (quality < 0) {
-                            quality = 0;
+                            quality = 0
                         } else if (quality > 100) {
-                            quality = 100;
+                            quality = 100
                         }
                         val fileType: Bitmap.CompressFormat
                         if (fileTypeString == "png") {
@@ -67,18 +60,28 @@ class FcNativeImageResizePlugin : FlutterPlugin, MethodCallHandler {
                         } else {
                             fileType = Bitmap.CompressFormat.JPEG
                         }
-                        val bitmap: Bitmap
+
+                        var bitmap: Bitmap
+                        val exif: ExifInterface
                         try {
                             if (srcFileUri) {
                                 val inputStream =
-                                    mContext.contentResolver.openInputStream(srcFile.toUri())
+                                    mContext.contentResolver.openInputStream(srcFile.toUri()) ?:
+                                        throw FailedToDecodeImageFileException("Failed to open input stream for URI: $srcFile")
                                 bitmap = BitmapFactory.decodeStream(inputStream)
+                                exif = ExifInterface(inputStream)
                             } else {
                                 bitmap = BitmapFactory.decodeFile(srcFile)
+                                    ?: throw FailedToDecodeImageFileException("Failed to decode image file: $srcFile")
+                                exif = ExifInterface(srcFile)
                             }
                         } catch (err: Exception) {
                             throw FailedToDecodeImageFileException(err.message)
                         }
+
+                        // Rotate the bitmap if required by EXIF data.
+                        bitmap = ImageUtils.rotateBitmapIfRequired(bitmap, exif)
+
                         val oldWidth = bitmap.width
                         val oldHeight = bitmap.height
                         if (width <= 0) {
@@ -137,4 +140,4 @@ class FcNativeImageResizePlugin : FlutterPlugin, MethodCallHandler {
     }
 }
 
-class FailedToDecodeImageFileException(message: String?) : Exception(message) {}
+class FailedToDecodeImageFileException(message: String?) : Exception(message)
