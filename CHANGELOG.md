@@ -1,3 +1,7 @@
+# 1.0.1
+
+- Update Swift package.
+
 # 1.0.0
 
 - **Breaking**: Migrate to AGP 9
