@@ -9,6 +9,7 @@ import Foundation
 enum PluginError: Error {
   case invalidSrc
   case invalidSize
+  case encodingFailed
 }
 
 public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
@@ -25,33 +26,43 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard call.method == "resizeFile" || call.method == "resizeFileToBytes" else {
+      result(FlutterMethodNotImplemented)
+      return
+    }
     guard let args = call.arguments as? [String: Any] else {
       result(FlutterError(code: "InvalidArgsType", message: "Invalid args type", details: nil))
       return
     }
     switch call.method {
-    case "resizeFile":
-      // Arguments are enforced on dart side.
-      let srcFile = args["srcFile"] as! String
+    case "resizeFile", "resizeFileToBytes":
+      guard let srcFile = args["srcFile"] as? String,
+        let width = args["width"] as? Int,
+        let height = args["height"] as? Int,
+        let outputString = args["type"] as? String,
+        let keepAspectRatio = args["keepAspectRatio"] as? Bool,
+        outputString == "png" || outputString == "jpeg",
+        call.method != "resizeFile" || args["destFile"] is String
+      else {
+        result(FlutterError(code: "PluginError", message: "Invalid resize arguments", details: nil))
+        return
+      }
       let srcUri = args["srcFileUri"] as? Bool ?? false
-      let destFile = args["destFile"] as! String
-      let width = args["width"] as! Int
-      let height = args["height"] as! Int
-      let outputString = args["type"] as! String
-      let keepAspectRatio = args["keepAspectRatio"] as! Bool
-
+      let destFile = args["destFile"] as? String
       let quality = args["quality"] as? Int
+      if let quality = quality, !(1...100).contains(quality) {
+        result(FlutterError(code: "PluginError", message: "Invalid quality", details: nil))
+        return
+      }
       let outputType = outputString == "png" ? FCImageOutputFormat.png : FCImageOutputFormat.jpeg
 
       guard let srcUrl = srcUri ? URL(string: srcFile) : URL(fileURLWithPath: srcFile) else {
         result(FlutterError(code: "PluginError", message: "Invalid source URL", details: nil))
         return
       }
-      let destUrl = URL(fileURLWithPath: destFile)
-
       DispatchQueue.global().async {
         do {
-          guard var img = FCImage(url: srcUrl) else {
+          guard let img = FCImage(url: srcUrl) else {
             throw PluginError.invalidSrc
           }
           guard
@@ -61,21 +72,17 @@ public class FcNativeImageResizePlugin: NSObject, FlutterPlugin {
           else {
             throw PluginError.invalidSize
           }
-          img = resized
-
-          switch outputType {
-          case .jpeg:
-            try img.saveToJPEGFile(dest: destUrl, quality: quality)
-          case .png:
-            try img.saveToPNGFile(dest: destUrl)
+          let data = try resized.encodedData(format: outputType, quality: quality)
+          if call.method == "resizeFile", let destFile = destFile {
+            try data.write(to: URL(fileURLWithPath: destFile))
           }
 
           DispatchQueue.main.async {
-            result(nil)
+            result(call.method == "resizeFileToBytes" ? FlutterStandardTypedData(bytes: data) : nil)
           }
         } catch PluginError.invalidSrc {
           DispatchQueue.main.async {
-            result(FlutterError(code: "InvalidSrc", message: "", details: nil))
+            result(FlutterError(code: "FailedToDecodeImageFile", message: "Failed to decode image file: \(srcFile)", details: nil))
           }
         } catch {
           DispatchQueue.main.async {

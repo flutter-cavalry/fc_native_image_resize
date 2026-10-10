@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import ImageIO
 
 #if os(iOS)
   import UIKit
@@ -39,14 +40,20 @@ class FCImage {
   }
 
   init?(url: URL) {
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+      let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+      let width = properties[kCGImagePropertyPixelWidth] as? Int,
+      let height = properties[kCGImagePropertyPixelHeight] as? Int,
+      let decoded = CGImageSourceCreateThumbnailAtIndex(source, 0, [
+        kCGImageSourceCreateThumbnailFromImageAlways: true,
+        kCGImageSourceCreateThumbnailWithTransform: true,
+        kCGImageSourceThumbnailMaxPixelSize: max(width, height),
+      ] as CFDictionary)
+    else { return nil }
     #if os(iOS)
-      guard let img = UIImage(contentsOfFile: url.path) else {
-        return nil
-      }
+      let img = UIImage(cgImage: decoded)
     #elseif os(macOS)
-      guard let img = NSImage(contentsOf: url) else {
-        return nil
-      }
+      let img = NSImage(cgImage: decoded, size: .zero)
     #endif
     image = img
   }
@@ -82,39 +89,50 @@ class FCImage {
   }
 
   func resized(to: CGSize, keepAspectRatio: Bool) -> FCImage? {
-    if to.width <= 0 && to.height <= 0 {
-      return nil
+    guard to.width != 0, to.height != 0, to.width >= -1, to.height >= -1,
+      to.width > 0 || to.height > 0,
+      keepAspectRatio || (to.width > 0 && to.height > 0),
+      let source = getCGImage()
+    else { return nil }
+    var width = to.width
+    var height = to.height
+    if keepAspectRatio {
+      let widthRatio = width == -1 ? CGFloat.infinity : width / CGFloat(source.width)
+      let heightRatio = height == -1 ? CGFloat.infinity : height / CGFloat(source.height)
+      let ratio = min(1, widthRatio, heightRatio)
+      width = CGFloat(source.width) * ratio
+      height = CGFloat(source.height) * ratio
     }
-    var targetSize = to
-    if to.width <= 0 {
-      targetSize.width = self.size().width * to.height / self.size().height
-    }
-    if to.height <= 0 {
-      targetSize.height = self.size().height * to.width / self.size().width
-    }
-    #if os(iOS)
-      return FCImage(image: image.resized(to: targetSize, keepAspectRatio: keepAspectRatio))
-    #elseif os(macOS)
-      return FCImage(image: image.resized(to: targetSize, keepAspectRatio: keepAspectRatio))
-    #endif
+    guard let context = CGContext(
+      data: nil, width: max(1, Int(width)), height: max(1, Int(height)),
+      bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+    else { return nil }
+    context.interpolationQuality = .high
+    context.draw(source, in: CGRect(x: 0, y: 0, width: context.width, height: context.height))
+    guard let resized = context.makeImage() else { return nil }
+    return FCImage(cgImage: resized)
+  }
+
+  func encodedData(format: FCImageOutputFormat, quality: Int?) throws -> Data {
+    guard let source = getCGImage() else { throw PluginError.encodingFailed }
+    let data = NSMutableData()
+    let type = format == .png ? "public.png" : "public.jpeg"
+    guard let destination = CGImageDestinationCreateWithData(data, type as CFString, 1, nil)
+    else { throw PluginError.encodingFailed }
+    let options: [CFString: Any] = format == .jpeg
+      ? [kCGImageDestinationLossyCompressionQuality: Double(quality ?? 90) / 100.0] : [:]
+    CGImageDestinationAddImage(destination, source, options as CFDictionary)
+    guard CGImageDestinationFinalize(destination) else { throw PluginError.encodingFailed }
+    return data as Data
   }
 
   func saveToJPEGFile(dest: URL, quality: Int?) throws {
-    #if os(iOS)
-      let data = image.jpegData(compressionQuality: Double(quality ?? 90) / 100.0)
-    #elseif os(macOS)
-      let data = image.nsImageToData(type: .jpeg, quality: quality)
-    #endif
-    try data?.write(to: dest)
+    try encodedData(format: .jpeg, quality: quality).write(to: dest)
   }
 
   func saveToPNGFile(dest: URL) throws {
-    #if os(iOS)
-      let data = image.pngData()
-    #elseif os(macOS)
-      let data = image.nsImageToData(type: .png, quality: nil)
-    #endif
-    try data?.write(to: dest)
+    try encodedData(format: .png, quality: nil).write(to: dest)
   }
 }
 

@@ -13,19 +13,73 @@ class MethodChannelFcNativeImageResize extends FcNativeImageResizePlatform {
   static const String failedToDecodeImageFile = 'FailedToDecodeImageFile';
 
   @override
-  Future<void> resizeFile(
-      {required String srcFile,
-      required String destFile,
-      required int width,
-      required int height,
-      required bool keepAspectRatio,
-      required String format,
-      bool? srcFileUri,
-      int? quality}) async {
+  Future<void> resizeFile({
+    required String srcFile,
+    required String destFile,
+    required int width,
+    required int height,
+    required bool keepAspectRatio,
+    required String format,
+    bool? srcFileUri,
+    int? quality,
+  }) async {
+    await _resize<void>(
+      'resizeFile',
+      srcFile: srcFile,
+      destFile: destFile,
+      width: width,
+      height: height,
+      keepAspectRatio: keepAspectRatio,
+      format: format,
+      srcFileUri: srcFileUri,
+      quality: quality,
+    );
+  }
+
+  @override
+  Future<Uint8List> resizeFileToBytes({
+    required String srcFile,
+    required int width,
+    required int height,
+    required bool keepAspectRatio,
+    required String format,
+    bool? srcFileUri,
+    int? quality,
+  }) async {
+    final bytes = await _resize<Uint8List>(
+      'resizeFileToBytes',
+      srcFile: srcFile,
+      width: width,
+      height: height,
+      keepAspectRatio: keepAspectRatio,
+      format: format,
+      srcFileUri: srcFileUri,
+      quality: quality,
+    );
+    if (bytes == null) {
+      throw PlatformException(
+        code: pluginError,
+        message: 'No image bytes returned',
+      );
+    }
+    return bytes;
+  }
+
+  Future<T?> _resize<T>(
+    String method, {
+    required String srcFile,
+    String? destFile,
+    required int width,
+    required int height,
+    required bool keepAspectRatio,
+    required String format,
+    bool? srcFileUri,
+    int? quality,
+  }) async {
     try {
-      await methodChannel.invokeMethod<void>('resizeFile', {
+      return await methodChannel.invokeMethod<T>(method, {
         'srcFile': srcFile,
-        'destFile': destFile,
+        'destFile': ?destFile,
         'width': width,
         'height': height,
         'keepAspectRatio': keepAspectRatio,
@@ -34,12 +88,15 @@ class MethodChannelFcNativeImageResize extends FcNativeImageResizePlatform {
         'quality': quality,
       });
     } on PlatformException catch (e) {
-      switch(e.code) {
-        case failedToDecodeImageFile : throw FailedToDecodeImageFileException(
-          message: e.message!,
-          details: e.details,
-        );
-        default: rethrow;
+      switch (e.code) {
+        case failedToDecodeImageFile:
+        case 'InvalidSrc':
+          throw FailedToDecodeImageFileException(
+            message: e.message ?? 'Failed to decode image file',
+            details: e.details,
+          );
+        default:
+          rethrow;
       }
     }
   }

@@ -1,6 +1,6 @@
 name: fc_native_image_resize
 description: A Flutter plugin to resize images via native APIs.
-version: 1.0.1
+version: 2.0.0
 homepage: https://github.com/flutter-cavalry/fc_native_image_resize
 
 environment:
@@ -43,6 +43,8 @@ flutter:
       macos:
         pluginClass: FcNativeImageResizePlugin
         sharedDarwinSource: true
+      windows:
+        pluginClass: FcNativeImageResizePluginCApi
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

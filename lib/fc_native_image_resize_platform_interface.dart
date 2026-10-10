@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'fc_native_image_resize_method_channel.dart';
@@ -24,15 +26,28 @@ abstract class FcNativeImageResizePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> resizeFile(
-      {required String srcFile,
-      required String destFile,
-      required int width,
-      required int height,
-      required bool keepAspectRatio,
-      required String format,
-      bool? srcFileUri,
-      int? quality}) {
+  Future<void> resizeFile({
+    required String srcFile,
+    required String destFile,
+    required int width,
+    required int height,
+    required bool keepAspectRatio,
+    required String format,
+    bool? srcFileUri,
+    int? quality,
+  }) {
     throw UnimplementedError('resizeFile() has not been implemented.');
+  }
+
+  Future<Uint8List> resizeFileToBytes({
+    required String srcFile,
+    required int width,
+    required int height,
+    required bool keepAspectRatio,
+    required String format,
+    bool? srcFileUri,
+    int? quality,
+  }) {
+    throw UnimplementedError('resizeFileToBytes() has not been implemented.');
   }
 }

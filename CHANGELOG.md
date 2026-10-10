@@ -1,3 +1,17 @@
+# 2.0.0
+
+- **Breaking**: Raise Android minimum SDK to API 28 (Android 9).
+- Add `resizeFileToBytes`, returning encoded `Uint8List` image data on all platforms.
+- Share native decoding, resizing, and encoding between file and byte outputs.
+- Restore native Windows support, targeting Windows 11 with WIC.
+- Use Android `ImageDecoder` for file/URI decoding, automatic EXIF orientation,
+  and decode-time resizing; remove the legacy decoder and manual rotation helper.
+- Release Android bitmap resources after encoding.
+- Fix Darwin output pixel dimensions and apply EXIF orientation before resizing.
+- Report encoding and decode failures consistently rather than silently succeeding.
+- Reject zero/invalid dimensions, unsupported output formats, and quality outside
+  1-100 with `ArgumentError` (previously some invalid options were accepted).
+
 # 1.0.1
 
 - Update Swift package.
