@@ -76,7 +76,9 @@ class FcNativeImageResizePlugin : public flutter::Plugin {
   }
 
   ~FcNativeImageResizePlugin() override {
-    channel_->SetMethodCallHandler(nullptr);
+    // The handler is not unregistered here: plugins are destroyed after the
+    // engine has detached from the messenger, and clearing a handler at that
+    // point dereferences a null engine and crashes the process on exit.
     {
       std::lock_guard<std::mutex> lock(mutex_);
       stopping_ = true;
