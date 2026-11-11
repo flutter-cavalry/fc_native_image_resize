@@ -1,3 +1,7 @@
+# 2.0.1
+
+- Fix Windows crash.
+
 # 2.0.0
 
 - **Breaking**: Raise Android minimum SDK to API 28 (Android 9).
